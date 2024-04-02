@@ -1,5 +1,6 @@
 .terraform.lock.hcl
 .terraform/
 terraform.tfstate
+terraform.tfstate.backup
 *.zip
 AWS-based Automated Image Resizing and Transfer System.drawio
