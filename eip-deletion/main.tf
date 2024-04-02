@@ -4,7 +4,7 @@ provider "aws" {
 
 variable "aws_region" {
   type        = string
-  default = "us-east-1"
+  default     = "us-east-1"
   description = "The AWS region to deploy the resources"
 }
 
@@ -21,15 +21,17 @@ data "archive_file" "lambda_zip" {
 
 
 resource "aws_lambda_function" "delete_unused_eips" {
-  filename      = "lambda_function_payload.zip"  # Update with your Lambda function code
+  filename      = "lambda_function_payload.zip" # Update with your Lambda function code
   function_name = "delete-unused-eips"
   role          = aws_iam_role.lambda_role.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.9"
+  timeout       = 30 # Update timeout to 30 seconds
   environment {
     variables = {
       OWNER_TAG   = var.owner_tag
       PURPOSE_TAG = var.purpose_tag
+      REGION      = var.aws_region
     }
   }
 }
@@ -38,13 +40,13 @@ resource "aws_iam_role" "lambda_role" {
   name = "lambda-role"
 
   assume_role_policy = jsonencode({
-    Version   = "2012-10-17",
+    Version = "2012-10-17",
     Statement = [{
-      Effect    = "Allow",
+      Effect = "Allow",
       Principal = {
         Service = "lambda.amazonaws.com"
       },
-      Action    = "sts:AssumeRole"
+      Action = "sts:AssumeRole"
     }]
   })
 }
@@ -52,14 +54,17 @@ resource "aws_iam_role" "lambda_role" {
 resource "aws_iam_policy" "lambda_policy" {
   name        = "lambda-policy"
   description = "Policy for Lambda function to delete unattached Elastic IPs"
-  policy      = jsonencode({
-    Version   = "2012-10-17",
+  policy = jsonencode({
+    Version = "2012-10-17",
     Statement = [{
-      Effect   = "Allow",
-      Action   = [
+      Effect = "Allow",
+      Action = [
         "ec2:DescribeInstances",
         "ec2:DescribeAddresses",
-        "ec2:ReleaseAddress"
+        "ec2:ReleaseAddress",
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
       ],
       Resource = "*"
     }]
@@ -72,7 +77,7 @@ resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
 }
 
 variable "owner_tag" {
-  description = "Tag value for 'owner-dev' tag"
+  description = "Tag value for 'owner' tag"
 }
 
 variable "purpose_tag" {
