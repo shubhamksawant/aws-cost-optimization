@@ -14,6 +14,6 @@ Run following command to run the application
 - run terraform init command
 - run terraform plan command { aws_region(default region us-east-1)  & tag can be provided as variable }
 - #run terraform apply command to override default region use below command and update tags to locate ec2 instances
-- terraform apply -var aws_region=us-west-1 owner_tag=dev  purpose_tag=test -auto-approve( to approve deployment automatically)
+- terraform apply -var aws_region=us-west-1 -var owner_tag=dev -var purpose_tag=test -auto-approve( to approve deployment automatically)
 
 
