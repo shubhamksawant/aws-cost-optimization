@@ -1,4 +1,3 @@
-# AWS Cost Optimization 
 
 ## Deleting Elastic IP which are not attached to EC2 instance  
 
@@ -11,9 +10,8 @@ To address this problem, we propose the development of a Lambda function that au
 
 Run following command to run the application
 - clone the repo
+- cd into folder
 - run terraform init command
-- run terraform plan command { aws_region(default region us-east-1)  & tag can be provided as variable }
-- #run terraform apply command to override default region use below command and update tags to locate ec2 instances
+- run terraform plan command { aws_region(default region us-east-1)  & email_address can be provided as variable }
+- #run terraform apply command to override default region use below command and update your email id for sns topic 
 - terraform apply -var aws_region=us-west-1 -var owner_tag=dev -var purpose_tag=test -auto-approve( to approve deployment automatically)
-
-
